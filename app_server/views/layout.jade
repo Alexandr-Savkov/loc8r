@@ -4,7 +4,26 @@ html
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/bootstrap/css/amelia.bootstrap.min.css')
   body
-    block content
-      script(src='/javascript/jquery-3.3.1.min.js')
-      script(src='/bootstrap/js/bootstrap.min.js')
+    .navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          a.navbar-brand(href='/') loc8r
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+        #navbar-main.navbar-collapse.collapse
+          ul.nav.navbar-nav
+            li
+              a(href='/about/') About
+    .container
+      block content
+      footer
+        .row
+          .col-xs-12
+            small &copy; Stack MEAN 2018
+
+  script(src='/javascript/jquery-3.3.1.min.js')
+  script(src='/bootstrap/js/bootstrap.min.js')
