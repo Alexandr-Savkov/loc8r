@@ -5,6 +5,8 @@ var gracefulShutdown;
 // var dbURI = 'mongodb://localhost/loc8r';
 var dbURI = 'mongodb://userloc8r:loc8r2018@ds119049.mlab.com:19049/loc8rdev';
 
+mongoose.connect(dbURI);
+
 // for log into logFile
 mongoose.connection.on('connected', function(){
 	console.log(process.platform);
