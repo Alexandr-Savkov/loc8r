@@ -26,7 +26,7 @@ var openingTimeSchema = new mongoose.Schema({
 	}
 });
 
-var locationSchems = new mongoose.Schema({
+var locationSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true
