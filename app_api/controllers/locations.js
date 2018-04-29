@@ -10,7 +10,8 @@ module.exports = {
 	locationsReadOne: locationsReadOne,
 	locationsListByDistance: locationsListByDistance,
 	locationsCreate: locationsCreate,
-	locationsUpdateOne: locationsUpdateOne
+	locationsUpdateOne: locationsUpdateOne,
+	locationsDeleteOne: locationsDeleteOne
 };
 
 var theEarth = (function() {
@@ -62,7 +63,7 @@ function locationsListByDistance (req, res) {
 			sendJsonResponse(res, 200, locations);
 		}
 	});
-};
+}
 
 var buildLocationList = function(req, res, results, stats) {
 	var locations = [];
@@ -96,7 +97,7 @@ function locationsReadOne (req, res) {
 	} else {
 		sendJsonResponse(res, 404, {"message":"No location Id in request, could you check it?"});
 	}
-};
+}
 
 function locationsCreate (req, res) {
 	console.log(req.body);
@@ -125,7 +126,7 @@ function locationsCreate (req, res) {
 			sendJsonResponse(res, 201, location);
 		}
 	});
-};
+}
 
 function locationsUpdateOne (req, res) {
 	if (!req.params.locationId) {
@@ -172,5 +173,28 @@ function locationsUpdateOne (req, res) {
 				});
 			}
 		);
+}
+
+function locationsDeleteOne (req, res) {
+	var locationid = req.params.locationId;
+	if (locationid) {
+		Loc
+			.findByIdAndRemove(locationid)
+			.exec(
+				function(err, location) {
+					if (err) {
+						console.log(err);
+						sendJsonResponse(res, 404, err);
+						return;
+					}
+					console.log("Location id " + locationid + " deleted");
+					sendJsonResponse(res, 204, null);
+				}
+			);
+	} else {
+		sendJsonResponse(res, 404, {
+			"message": "No locationid"
+		});
+	}
 };
 
