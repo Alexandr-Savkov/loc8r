@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-
 var gracefulShutdown;
 
 // var dbURI = 'mongodb://localhost/loc8r';
@@ -9,8 +8,6 @@ var dbURI = 'mongodb://localhost/loc8r';
 if(process.env.NODE_ENV === 'production') {
 	dbURI = process.env.MONGOLAB_URI;
 }
-
-
 mongoose.connect(dbURI);
 
 // for log into logFile
@@ -64,6 +61,9 @@ process.on('SIGTERM', function(){
 		process.exit(0);
 	});
 });
+
+//for model $ schema
+require('./locations');
 
 
 
