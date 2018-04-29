@@ -6,12 +6,12 @@ var ctrlReviews = require('../controllers/reviews');
 router.get('/locations', ctrlLocations.locationsListByDistance);
 router.post('/locations', ctrlLocations.locationsCreate);
 router.get('/locations/:locationId', ctrlLocations.locationsReadOne);
-// router.put('/locations/:locationId', ctrlLocations.locationsUpdateOne);
+router.put('/locations/:locationId', ctrlLocations.locationsUpdateOne);
 // router.delete('/locations/:locationId', ctrlLocations.locationsDeleteOne);
 
 router.post('/locations/:locationId/reviews', ctrlReviews.reviewsCreate);
 router.get('/locations/:locationId/reviews/:reviewId', ctrlReviews.reviewsReadOne);
-// router.put('/locations/:locationId/reviews/:reviewId', ctrlReviews.reviewsUpdateOne);
+router.put('/locations/:locationId/reviews/:reviewId', ctrlReviews.reviewsUpdateOne);
 // router.delete('/locations/:locationId/reviews/:reviewId', ctrlReviews.reviewsDeleteOne);
 
 
