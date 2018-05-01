@@ -2,6 +2,8 @@ var request = require('request');
 
 module.exports = {
 	homeList: homeList,
+	locationsInfo: locationsInfo,
+
 
 };
 
@@ -40,54 +42,10 @@ function homeList (req, res){
 	);
 }
 
-module.exports.locationsInfo = function(req, res){
-	res.render('location-info', {
-		title: 'StarCups',
-		pageHeader: {title: 'StarCups'},
-		sidebar: {
-			context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
-			callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
-		},
-		location: {
-			name: 'StarCups',
-			rating: 3,
-			address: '125 High Street, Reading, RG 1PS',
-			facilities: ['Hot drinks', 'Food', 'Premium WiFi'],
-			coords: {
-				lat: 51.455041,
-				lng: -0.9690884
-			},
-			openingTimes: [
-				{
-					days: 'Monday - Friday',
-					opening: '7:00 am',
-					closing: '7:00 pm',
-					closed: false
-				},{
-					days: 'Saturday',
-					opening: '8:00 am',
-					closing: '5:00 pm',
-					closed: false
-				},{
-					days: 'Saturday',
-					closed: true
-				}
-			],
-			reviews: [
-				{
-					rating: 5,
-					author: 'Simon Holmes',
-					timestamp: '16 July 2013',
-					reviewText: 'What a great place. I can\'t say enough good things about it.'
-				},{
-					rating: 3,
-					reviewAuthor: 'Charlie Chaplin',
-					reviewTimestamp: '16 March 2018',
-					reviewText: 'It was okay. Coffee wasn\'t great, but the wifi was fast.'
-				}
-			]
-		}
-	})
+function locationsInfo (req, res){
+	getLocationInfo(req, res, function(req, res, responseData) {
+		renderDetailPage(req, res, responseData);
+	});
 };
 
 module.exports.addReview = function(req, res){
@@ -120,6 +78,18 @@ function renderHomepage (req, res, responseBody){
 	});
 }
 
+function renderDetailPage (req, res, locDetail) {
+	res.render('location-info', {
+		title: locDetail.name,
+		pageHeader: {title: locDetail.name},
+		sidebar: {
+			context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
+			callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
+		},
+		location: locDetail
+	});
+}
+
 function _formatDistance (distance) {
 	var numDistance, unit;
 	if (distance && _isNumeric(distance)) {
@@ -134,4 +104,52 @@ function _formatDistance (distance) {
 	} else {
 		return "?";
 	}
+}
+
+function _isNumeric (n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function _showError (req, res, status) {
+	var title, content;
+	if (status === 404) {
+		title = "404, page not found";
+		content = "Oh dear. Looks like we can't find this page. Sorry.";
+	} else if (status === 500) {
+		title = "500, internal server error";
+		content = "How embarrassing. There's a problem with our server.";
+	} else {
+		title = status + ", something's gone wrong";
+		content = "Something, somewhere, has gone just a little bit wrong.";
+	}
+	res.status(status);
+	res.render('generic-text', {
+		title : title,
+		content : content
+	});
+}
+
+function getLocationInfo (req, res, callback) {
+	var requestOptions, path;
+	path = "/api/locations/" + req.params.locationId;
+	requestOptions = {
+		url : apiOptions.server + path,
+		method : "GET",
+		json : {}
+	};
+	request(
+		requestOptions,
+		function(err, response, body) {
+			var data = body;
+			if (response.statusCode === 200) {
+				data.coords = {
+					lng : body.coords[0],
+					lat : body.coords[1]
+				};
+				callback(req, res, data);
+			} else {
+				_showError(req, res, response.statusCode);
+			}
+		}
+	);
 }
